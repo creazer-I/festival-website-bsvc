@@ -1,0 +1,49 @@
+html,
+body {
+  font-family: "Courier";
+  color: black;
+  background-color: #424B54;
+}
+
+button {
+  font-family: "Courier";
+}
+
+table {
+  margin: auto;
+  width: 80%;
+  height: 300px;
+}
+
+tr {
+  height: 500px;
+}
+
+td {
+  padding: 10px;
+  background-color: #D5ACA9;
+  width: 50%;
+  height: 90%;
+}
+
+h1 {
+  text-align: center;
+  color: #EBCFB2;
+  text-decoration: underline;
+}
+
+h2 {
+  text-align: center;
+  color: #EBCFB2;
+}
+
+.box {
+  height: 90%;
+  width: 100%;
+  background-color: white;
+  position: relative;
+}
+
+#top {
+  text-align: center;
+}

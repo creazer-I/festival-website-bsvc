@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Spot the difference!</title>
+  <link href="https://fonts.googleapis.com/css?family=Anonymous+Pro" rel="stylesheet">
+  <!-- <link href="https://fonts.googleapis.com/css?family=Questrial" rel="stylesheet"> -->
+  <link href="https://fonts.googleapis.com/css?family=Chango" rel="stylesheet">
+  <!-- <link href="https://fonts.googleapis.com/css?family=Chela+One" rel="stylesheet"> -->
+  <link rel="stylesheet" href="css/bootstrap.min.css" charset="utf-8">
+  <link rel="stylesheet" href="css/font-awesome-4.6.3/css/font-awesome.min.css" charset="utf-8">
+  <link rel="stylesheet" href="css/animate.css" charset="utf-8">
+  <link rel="stylesheet" href="css/style.css" charset="utf-8">
+  <script src="js/external/jquery-3.7.1.min.js"></script>
+  <script src="js/external/bootstrap.min.js"></script>
+  <script src="js/answers.js"></script>
+  <script src="js/main.js"></script>
+
+</head>
+<!-- THIS GAME NEEDS TABLET SCREEN SIZE AND ABOVE TO BE FUN -->
+<!-- BOOTSTRAP OPTIMISED FOR 'SM' DEVICES AND ABOVE ONLY! -->
+<body>
+
+  <!-- ============ FANCY UI ACTION AREA ============ -->
+
+  <!-- Current score | game logo | highscore + Time assist icons -->
+  <div id="dashboard" class="container-fluid text-center restrict-height">
+    <div class="row">
+      <div class="col-sm-3 game-font text-left">
+        <h3 class="game-font">
+          Your score
+        </h3>
+        <div id="score-ui" class="score-ui dark">
+          000
+        </div>
+      </div>
+      <div class="col-sm-3 text-right">
+        <h3 class="game-font">
+          Highscore
+        </h3>
+        <div id="highscore" class="game-font score-ui">
+          600
+        </div>
+        <div id="assist-time">
+          <img class="icon" src="img/icon-time.png" alt="time icon" />
+          <img class="icon" src="img/icon-time.png" alt="time icon" />
+          <img class="icon" src="img/icon-time.png" alt="time icon" />
+        </div>
+      </div>
+    </div>
+
+    <!-- Time countdown bar | Clue assist icons -->
+
+  </div><!-- /.container-fluid#dashboard -->
+
+  <!-- ============ GAMEPLAY AREA ============ -->
+  <div id="images-area" class="container-fluid text-center restrict-height">
+    <!-- Area divided into | left-pane | right-pane | -->
+
+    <div id="game-stage" class="row">
+      <!-- Left Picture Pane -->
+      <!-- Do not add to 'left-pane' any class name containing 'img' -->
+      <!-- // it will screw up 'doImg' function in main.js -->
+      <div id="left-pane" class="col-sm-6 tight-fit img1a">
+        <canvas id="canvas-left" width="675" height="527"></canvas>
+      </div>
+
+      <!-- Right Picture Pane -->
+      <div id="right-pane" class="col-sm-6 tight-fit img1b pull-right">
+        <canvas id="canvas-right" width="675" height="527"></canvas>
+      </div>
+
+      <div id="countdown-timer" class="animated infinite pulse game-font"></div>
+    </div>
+  </div>
+
+  <!-- Bootstrap Modal for youtube pop up -->
+  <div class="modal fade" id="videoPopUp" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content game-font">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="myModalLabel">Nice job.</h4>
+        </div>
+        <div class="modal-body">
+          <iframe width="560" height="315" src="" frameborder="0" allowfullscreen></iframe>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
