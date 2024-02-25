@@ -1,461 +1,206 @@
-/* global $ */
+// 
 
-$(document).ready(function () {
+var canvas1, canvas2, context1, context2;
+var score = 0;
+var differenceCount = 0;
+var clickProcessed = false;
+var missCount = 0;
+var lives = 2; // Initial lives
+var timeLimit = 120; // 2 minutes in seconds
+var timerInterval;
 
-    var TIMER_ID = '';
-    var TIME_LEFT = 120;
-    var GAME_OVER = false;
-    var CUR_IMG_IND = 0;
-    var SCORE = 0;
-    var ASSIST_TIME_CREDITS = 3;
-    var ASSIST_CLUE_CREDITS = 3;
-  
-    // Stores all answer objects (see answers.js)
-    var IMAGES = [img1];
-    var IMAGES_PLAYED = []; // img objects popped here after each round.
-    var CUR_IMG_IN_PLAY = gameplayRound('check'); // stores answers for current round.
-  
-    // --- INITALISE GAME ---
-  
-    // CLICK LISTENERS
-    // Click listeners for left and right image canvas
-    document.getElementById('canvas-left').addEventListener('click', playTurn, false);
-    document.getElementById('canvas-right').addEventListener('click', playTurn, false);
-  
-    // Click listeners for Assist buttons
-    $('#assist-clue img').on('click', useClue);
-    $('#assist-time img').on('click', function () {
-      if (ASSIST_TIME_CREDITS > 0) {
-        timer('add');
-        ASSIST_TIME_CREDITS--;
-        $(this).fadeOut();
-      }
+var differences = [
+    {x1: 309, y1: 188.125, x2: 909, y2: 188.125, found: false},
+    {x1: 451, y1: 201.125, x2: -149, y2: 205.125, found: false},
+    {x1: 277, y1: 71.125, x2: 877, y2: 71.125, found: false},
+    {x1: 143, y1: 323.125, x2: 743, y2: 323.125, found: false},
+    {x1: 542, y1: 210.125, x2: 1142, y2: 210.125, found: false},
+    // Add more coordinates as needed
+];
+
+window.onload = function() {
+    canvas1 = document.getElementById('imageCanvas1');
+    context1 = canvas1.getContext('2d');
+
+    canvas2 = document.getElementById('imageCanvas2');
+    context2 = canvas2.getContext('2d');
+
+    canvas1.addEventListener('click', checkDifference);
+    canvas2.addEventListener('click', checkDifference);
+
+    canvas1.addEventListener('click', function() { clickProcessed = false; });
+    canvas2.addEventListener('click', function() { clickProcessed = false; });
+
+    canvas1.addEventListener('click', logCoordinates);
+    canvas2.addEventListener('click', logCoordinates);
+
+    var img1 = new Image();
+    var img2 = new Image();
+
+    img1.onload = function() {
+        canvas1.width = img1.width;
+        canvas1.height = img1.height;
+        context1.drawImage(img1, 0, 0, img1.width, img1.height);
+    };
+
+    img2.onload = function() {
+        canvas2.width = img2.width;
+        canvas2.height = img2.height;
+        context2.drawImage(img2, 0, 0, img2.width, img2.height);
+    };
+
+    img1.src = '/app/images/different-Image-collection1/OfficePuzzle--2.png';
+    img2.src = './images/different-Image-collection1/OfficePuzzle--1.png';
+
+    // Start the timer
+    startTimer();
+};
+
+function startTimer() {
+    var timerDisplay = document.getElementById('timer');
+    var minutes, seconds;
+
+    timerInterval = setInterval(function() {
+        minutes = Math.floor(timeLimit / 60);
+        seconds = timeLimit % 60;
+
+        // Display the timer
+        timerDisplay.textContent = 'Time: ' + (minutes < 10 ? '0' : '') + minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
+
+        if (timeLimit <= 0) {
+            clearInterval(timerInterval);
+            endGame("Time's up! Thank you for participating.");
+        }
+
+        timeLimit--;
+    }, 1000);
+}
+
+function checkDifference(event, canvasId) {
+    var x, y;
+    if (canvasId === 'imageCanvas1') {
+        x = event.clientX - canvas1.getBoundingClientRect().left;
+        y = event.clientY - canvas1.getBoundingClientRect().top;
+    } else if (canvasId === 'imageCanvas2') {
+        x = event.clientX - canvas2.getBoundingClientRect().left;
+        y = event.clientY - canvas2.getBoundingClientRect().top;
+    }
+
+    var found = false;
+
+    differences.forEach(function(difference, index) {
+        var dx1 = difference.x1 - x;
+        var dy1 = difference.y1 - y;
+        var distance1 = Math.sqrt(dx1 * dx1 + dy1 * dy1);
+
+        var dx2 = difference.x2 - x;
+        var dy2 = difference.y2 - y;
+        var distance2 = Math.sqrt(dx2 * dx2 + dy2 * dy2);
+
+        if ((distance1 < 20 || distance2 < 20) && !difference.found && !found) {
+            // Draw circle on first canvas
+            context1.beginPath();
+            context1.arc(difference.x1, difference.y1, 20, 0, 2 * Math.PI, false);
+            context1.lineWidth = 3;
+            context1.strokeStyle = 'green';
+            context1.stroke();
+
+            // Draw circle on second canvas
+            context2.beginPath();
+            context2.arc(x, y, 20, 0, 2 * Math.PI, false); // Use x and y instead of difference.x2 and difference.y2
+            context2.lineWidth = 3;
+            context2.strokeStyle = 'green';
+            context2.stroke();
+
+            score += 100;
+            differenceCount++;
+            difference.found = true;
+            found = true;
+        }
     });
-  
-    // Start timer
-    timer('start');
-  
-    // !--- GAME LOGIC ---! //
-    // ---- playTurn is the main control-flow function ----
-    // Executes when any part of image canvas is clicked.
-    function playTurn (ev) {
-      var isCorrect = false;
-      var foundArr = [];
-      var latestFind = [];  // 1d array
-  
-      // executes when user clicks Clue Assist
-      if (Array.isArray(ev)) {
-        latestFind = ev;
-        isCorrect = true; // ansArr will always be true
-      // executes when user clicks on image to try to spot difference
-      } else if (typeof ev === 'object' && !Array.isArray(ev)) {
-        var position = getPosition(ev); // returns [x-val, y-val]
-        isCorrect = isRight(position);
-        var elementId = ev.target.id;
-        foundArr = CUR_IMG_IN_PLAY['found'];
-        latestFind = foundArr[foundArr.length - 1];  // 1d array
-      }
-      // executes when correct answer is detected.
-      if (isCorrect && !GAME_OVER) {
-        // searches 2d array for the latest 1d array in it
-        // foundArr: [lowerX, upperX, lowerY, upperY, centerX, centerY]
-        var lowerX = latestFind[0];
-        var upperX = latestFind[1];
-        var lowerY = latestFind[2];
-        var upperY = latestFind[3];
-        var centerX = latestFind[4];
-        var centerY = latestFind[5];
-        var width = upperX - lowerX;
-        var height = upperY - lowerY;
-  
-        drawEllipse('canvas-left', centerX, centerY, width, height);
-        drawEllipse('canvas-right', centerX, centerY, width, height);
-        incrementScore();
-        document.getElementById('right-fx').play();
-        if (isRoundOver()) {
-          // check if this is the FINAL round
-          if (isGameOver('final')) {
-            isGameOver('won'); // play victory video
-          } else if (!isGameOver('final')) {
-            timer('stop'); // freeze time bar
-            initiateCountdown();
-            // reset time, clear board, start new round
-            setTimeout(function () {
-              TIME_LEFT += 15;
-              clearCanvas();
-              gameplayRound('new');
-              timer('start');
-            }, 5000);
-          }
+
+    if (!found) {
+        // Reduce one life if the difference was not found
+        lives--;
+        if (lives <= 0) {
+            // No lives left, end the game
+            endGame("You ran out of lives! Thank you for participating.");
+            return; // Exit the function to prevent further execution
         }
-      }
-      // executes when wrong choice is detected.
-      if (!isCorrect && !GAME_OVER) {
-        timer('penalty');
-        // Draw cross using canvas
-        drawAndFadeCross(elementId, position[0], position[1]);
-        document.getElementById('wrong-fx').play();
-        $('#game-stage').animateCss('headShake');
-      }
     }
-  
-    function incrementScore () {
-      var amt = TIME_LEFT * 50;
-      SCORE += amt;
-      $('#score-ui').text(SCORE);
+
+    if (differenceCount === differences.length) {
+        // All differences found, end the game
+        endGame("Congratulations! You found all the differences. Thank you for participating.");
+        return; // Exit the function to prevent further execution
     }
-  
-    // Pushes info of newly discovered answer into 'found' key in img object
-    // info:
-    // called by isRight() function
-    function logAnswer (obj, areaArr) {
-      // areaArr format: [lowerX, upperX, lowerY, upperY, centerX, centerY]
-      var target = obj;
-      target['found'].push(areaArr); // store array in obj key 'found'
-    }
-  
-    // checks whether a click is in an undiscovered area.
-    function isUndiscovered (obj, clickX, clickY) {
-      var arr = obj['found']; // stores 2d array
-      for (var i = 0; i < arr.length; i++) {
-        if (clickX >= arr[i][0] && clickX <= arr[i][1] && clickY >= arr[i][2] && clickY <= arr[i][3]) {
-          return false; // the click is not undiscovered
+
+    console.log("Score: " + score);
+    console.log("Differences found: " + differenceCount);
+    console.log("Lives: " + lives);
+
+    document.getElementById('score').textContent = "Score: " + score;
+    document.getElementById('differenceCount').textContent = "Differences found: " + differenceCount;
+    document.getElementById('lives').textContent = "Lives: " + lives;
+}
+
+function endGame(message) {
+    clearInterval(timerInterval);
+
+    // Create a modal
+    var modal = document.createElement("div");
+    modal.setAttribute("id", "myModal");
+    modal.setAttribute("class", "modal");
+
+    // Create a modal content
+    var modalContent = document.createElement("div");
+    modalContent.setAttribute("class", "modal-content");
+    modal.appendChild(modalContent);
+
+    // Create a close button
+    var close = document.createElement("span");
+    close.setAttribute("class", "close");
+    close.innerHTML = "×";
+    modalContent.appendChild(close);
+
+    // Create a text node with the end message
+    var text = document.createTextNode(message);
+    modalContent.appendChild(text);
+
+    // Create a button
+    var btn = document.createElement("button");
+    btn.innerHTML = "Return to Home";
+    btn.onclick = function () {
+        window.location.href = './index.html'; // Replace with your home page URL
+    };
+    modalContent.appendChild(btn);
+
+    // Append the modal to the body
+    document.body.appendChild(modal);
+
+    // Show the modal
+    modal.style.display = "block";
+
+    // When the user clicks on <span> (x), close the modal
+    close.onclick = function() {
+        modal.style.display = "none";
+    };
+
+    // When the user clicks anywhere outside of the modal, close it
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
         }
-      }
-      return true; // the click is undiscovered
-    }
-  
-    // Verifies if a click is within any hot zone.
-    function isRight (coords) {
-      var clickX = coords[0]; // x-axis value
-      var clickY = coords[1]; // y-axis value
-      var coordsAnswerArr = CUR_IMG_IN_PLAY.ansCoords; // [[x, y], [x, y]...]
-      var areaAnswerArr = CUR_IMG_IN_PLAY.ansArea; // [[x-width, y-height]...]
-  
-      // tests for already-rightly-clicked
-      if (!isUndiscovered(CUR_IMG_IN_PLAY, clickX, clickY)) {
-        return 'already discovered'; // make playTurn() do nothing when returned
-      } else if (isUndiscovered(CUR_IMG_IN_PLAY, clickX, clickY)) {
-        // check user's click against answers
-        for (var i = 0; i < coordsAnswerArr.length; i++) {
-          if (typeof coordsAnswerArr[i] !== 'string') {
-            var x1 = coordsAnswerArr[i][0] - areaAnswerArr[i][0]; // x lower limit
-            var x2 = coordsAnswerArr[i][0] + areaAnswerArr[i][0]; // x upper limit
-            var y1 = coordsAnswerArr[i][1] - areaAnswerArr[i][1]; // y lower limit
-            var y2 = coordsAnswerArr[i][1] + areaAnswerArr[i][1]; // y upper limit
-  
-            // if within hot zone
-            if (clickX >= x1 && clickX <= x2 && clickY >= y1 && clickY <= y2) {
-              var centerX = coordsAnswerArr[i][0];
-              var centerY = coordsAnswerArr[i][1];
-              CUR_IMG_IN_PLAY.ansCoords[i] = 'found'; // leave mark in answer array
-              // push info to 'found' key of image object
-              logAnswer(CUR_IMG_IN_PLAY, [x1, x2, y1, y2, centerX, centerY]);
-              return true;
-            }
-          }
-        }
-        return false;
-      }
-    }
-  
-    // Checks whether current image's differences are all found.
-    // true if 5 differences have been found
-    function isRoundOver () {
-      var count = 0;
-      for (var j = 0; j < CUR_IMG_IN_PLAY.ansCoords.length; j++) {
-        if (CUR_IMG_IN_PLAY.ansCoords[j] === 'found') {
-          count++;
-        }
-      }
-      if (count === 5) {
-        return true;
-      }
-      return false;
-    }
-  
-    // Check if game is over, or set lost/won state.
-    // (1) 'CHECK' - RETURNS TRUE IF FINAL ROUND IS OVER
-    // (2) 'LOST' - SETS GAME_OVER TO TRUE
-    // (3) 'WON' - SETS GAME_OVER TO TRUE, CALL playVictoryVideo
-    function isGameOver (option) {
-      if (option === 'final') { // returns true if final round is over
-        if (IMAGES.length - 1 === 0) { // no more images to play
-          var count = 0;
-          CUR_IMG_IN_PLAY.ansCoords.forEach(function (el, ind, arr) {
-            if (el === 'found') {
-              count++;
-            }
-          });
-          if (count === CUR_IMG_IN_PLAY.ansCoords.length) {
-            return true;
-          }
-        } else {
-          return false;
-        }
-      } else if (option === 'lost') {
-        GAME_OVER = true;
-      } else if (option === 'won') {
-        // pop up window w/ 2 options: (1) restart (2) cancel
-        GAME_OVER = true;
-        clearInterval(TIMER_ID);
-        playVictoryVideo();
-      }
-    }
-  
-    // 2 options to manipulate images -
-    // (1) 'new': retires old image and serves new one on DOM.
-    // (2) 'check': returns current in-play image object.
-    function gameplayRound (option) {
-      if (option === 'new') {
-        // DEALING WITH THE OLD - Update javascript variables:
-        var oldImgObj = IMAGES[CUR_IMG_IND];
-        IMAGES_PLAYED.push(oldImgObj); // add old img to played array.
-        IMAGES.splice(CUR_IMG_IND, 1); // remove old img from unserved array.
-        // BRING ON THE NEW
-        // randomly select new image to serve
-        CUR_IMG_IND = randomIntFromInterval(0, IMAGES.length - 1);
-        // update CUR_IMG_IN_PLAY
-        var newImgObj = IMAGES[CUR_IMG_IND];
-        CUR_IMG_IN_PLAY = newImgObj;
-        serveNewImg(newImgObj); // removes old image, adds new one
-      }
-      if (option === 'check') {
-        // returns current image object
-        return IMAGES[CUR_IMG_IND];
-      }
-    }
-  
-    // Updates DOM with new image for a new round.
-    // Called by gameplayRound function.
-    function serveNewImg (imgObject) {
-      // 'img' argument is an object corresponding to current img in play.
-      var leftPaneClassList = document.getElementById('left-pane').classList;
-      var rightPaneClassList = document.getElementById('right-pane').classList;
-      var leftOldImgClass = '';
-      var rightOldImgClass = '';
-      // finds out name of current image class on screen
-      leftPaneClassList.forEach(function (element, index, array) {
-        if (element.includes('img')) {
-          leftOldImgClass = element;
-        }
-      });
-      rightPaneClassList.forEach(function (element, index, array) {
-        if (element.includes('img')) {
-          rightOldImgClass = element;
-        }
-      });
-      // remove old image CSS class
-      $('#left-pane').removeClass(leftOldImgClass);
-      $('#right-pane').removeClass(rightOldImgClass);
-      // add new image CSS class
-      // based on img object's 'name' key
-      $('#left-pane').addClass(imgObject.cssClass + 'a');
-      $('#right-pane').addClass(imgObject.cssClass + 'b');
-    }
-  
-    // 'start' / 'stop' timer
-    // 'add' for time extension when user clicks Time Assist
-    function timer (option) {
-      if (option === 'start') {
-        TIMER_ID = setInterval(function () {
-          var percentage = TIME_LEFT + '%';
-          $('#time-bar').css('width', percentage);
-          TIME_LEFT--;
-          if (TIME_LEFT < 0) { // TIME'S UP - GAME OVER!
-            clearInterval(TIMER_ID);
-            GAME_OVER = true;
-            document.getElementById('ticking').pause();
-            document.getElementById('gameover').play();
-          } else if (TIME_LEFT < 20) {
-            $('#time-bar').removeClass('progress-bar-warning progress-bar-success');
-            $('#time-bar').addClass('progress-bar-danger');
-            document.getElementById('ticking').play();
-          } else if (TIME_LEFT === 50) {
-            $('#time-bar').removeClass('progress-bar-warning progress-bar-success');
-            $('#time-bar').addClass('progress-bar-warning');
-          } else if (TIME_LEFT === 99) {
-            $('#time-bar').removeClass('progress-bar-warning progress-bar-success progress-bar-danger');
-            $('#time-bar').addClass('progress-bar-success');
-          }
-        }, 700);
-      } else if (option === 'stop') {
-        clearInterval(TIMER_ID);
-      } else if (option === 'add') {  // used when user activates assist-time
-        TIME_LEFT += 10;
-      } else if (option === 'penalty') { // when user selects wrong spot
-        TIME_LEFT -= 6;
-      }
-    }
-  
-    // Executes when user clicks Clue Assist.
-    function useClue () {
-      // reduce clue credits
-      if (ASSIST_CLUE_CREDITS > 0) {
-        ASSIST_CLUE_CREDITS--;
-        $(this).fadeOut();
-        document.getElementById('clue-fx').play();
-  
-        // -- Auto select mechanism --
-        // coordsArray[i] is associated directly with areaArray[i]
-        var coordsArray = CUR_IMG_IN_PLAY.ansCoords; // 2d array
-        var areaArray = CUR_IMG_IN_PLAY.ansArea; // 2d array
-        var choiceCoords = []; // 1d array with coords to right answer
-        var choiceArea = []; // 1d array with area dimensions to right answer
-        var index = 0;
-        // loop through answers until it finds one that is yet to be selected by user.
-        for (var i = 0; i < coordsArray.length; i++) {
-          if (coordsArray[i] !== 'found') {
-            choiceCoords = coordsArray[i];
-            choiceArea = areaArray[i];
-            index = i;
-          }
-        }
-        // format array into something usable by playTurn():
-        // [lowerX, upperX, lowerY, upperY, centerX, centerY]
-        var centerX = choiceCoords[0];
-        var centerY = choiceCoords[1];
-        var lowerX = centerX - choiceArea[0];
-        var upperX = centerX + choiceArea[0];
-        var lowerY = centerY - choiceArea[1];
-        var upperY = centerY + choiceArea[1];
-  
-        var arr = [lowerX, upperX, lowerY, upperY, centerX, centerY];
-  
-        CUR_IMG_IN_PLAY['found'].push(arr); // store in found key of img object
-        CUR_IMG_IN_PLAY.ansCoords[index] = 'found'; // leave 'found' marker in answer array
-  
-        // use playTurn to execute the click on image
-        playTurn(arr);
-      }
-    }
-  
-    // Pushes message onto the msg display box.
-    function initiateCountdown () {
-      var count = 5;
-      var tempTimer = setInterval(function () {
-        $('#countdown-timer').text(count.toString()); // display in middle of screen
-        count--;
-        if (count < 0) {
-          clearInterval(tempTimer);
-          $('#countdown-timer').text('');
-        }
-      }, 1000);
-    }
-  
-    // CANVAS CONTROL FUNCTIONS
-  
-    // Gets offsetted coordinates of click on <canvas>
-    // x,y origin is at top left corner of canvas element
-    function getPosition (ev) {
-      var paneId = ev.target.id;
-      var leftOffset;
-      var topOffset;
-      // Obtain coords of left or right pane, measured from top left of window
-      if (paneId.includes('left')) {
-        leftOffset = document.getElementById('left-pane').offsetLeft;
-        topOffset = document.getElementById('left-pane').offsetTop;
-      } else if (paneId.includes('right')) {
-        leftOffset = document.getElementById('right-pane').offsetLeft;
-        topOffset = document.getElementById('right-pane').offsetTop;
-      }
-      // Check and compensate for user's browser scrollTop value
-      if (document.body.scrollTop) {
-        topOffset -= document.body.scrollTop;
-      }
-  
-      var x = ev.x; // x-position of click on viewport (not canvas)
-      var y = ev.y; // y-position of click on viewport
-  
-      x -= leftOffset;
-      y -= topOffset;
-  
-      // Uncomment this to get answer coordinates of new game pictures
-      // console.log('x: ', x, ' y: ', y);
-  
-      return [x, y];
-    }
-  
-    // drawCircle('canvas-left', 70, 80, 30);
-  
-    // Draws oval shape on <canvas> elements
-    // (modified from: http://bit.ly/2bBPWHm)
-    function drawEllipse (id, centerX, centerY, width, height) {
-      var canv = document.getElementById(id);
-      var ctx = canv.getContext('2d');
-  
-      ctx.beginPath();
-      ctx.moveTo(centerX, centerY - height / 2); // startpoint top
-  
-      ctx.bezierCurveTo( // half an oval
-        centerX + width / 2, centerY - height / 2, // CP top right
-        centerX + width / 2, centerY + height / 2, // CP bottom right
-        centerX, centerY + height / 2); // endpoint bottom
-  
-      ctx.bezierCurveTo( // 2nd half
-        centerX - width / 2, centerY + height / 2, // CP bottom left
-        centerX - width / 2, centerY - height / 2, // CP top left
-        centerX, centerY - height / 2); // startpoint top
-  
-      ctx.lineWidth = 6;
-      ctx.strokeStyle = '#74C374';
-      ctx.stroke();
-    }
-  
-    // // proof that the function works correctly...
-    // drawEllipse('canvas-left', 34, 192, 40, 130);
-    // drawEllipse('canvas-left', 264, 564, 300, 40);
-  
-    // Draws big fat 'X' on clicked coordinates
-    // and clears it after a setTimeout
-    function drawAndFadeCross (id, x, y) {
-      var can = document.getElementById(id);
-      var ctx = can.getContext('2d');
-      ctx.lineWidth = 6;
-      ctx.strokeStyle = '#E03A4A';
-  
-      ctx.beginPath();
-  
-      ctx.moveTo(x - 20, y - 20);
-      ctx.lineTo(x + 20, y + 20);
-      ctx.stroke();
-  
-      ctx.moveTo(x - 20, y + 20);
-      ctx.lineTo(x + 20, y - 20);
-      ctx.stroke();
-  
-      // clear the cross 1 sec after it appears
-      setTimeout(function () {
-        ctx.clearRect(x - 21, y - 21, 42, 42);
-      }, 1000);
-    }
-  
-    // Clears both canvas completely
-    function clearCanvas () {
-      var canv = document.getElementById('canvas-left').getBoundingClientRect();
-      var width = Math.round(canv.width);
-      var height = Math.round(canv.height);
-      var canvLeft = document.getElementById('canvas-left').getContext('2d');
-      var canvRight = document.getElementById('canvas-right').getContext('2d');
-  
-      canvLeft.clearRect(0, 0, width, height);
-      canvRight.clearRect(0, 0, width, height);
-    }
-  
-    // -- OTHER NON-LOGIC FUNCTIONS ---
-  
-    // animate.css jQuery extension function
-    $.fn.extend({
-      animateCss: function (animationName) {
-        var animationEnd = 'webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend';
-        $(this).addClass('animated ' + animationName).one(animationEnd, function () {
-          $(this).removeClass('animated ' + animationName);
-        });
-      }
-    });
-  
-    // MATH
-    function randomIntFromInterval (min, max) {
-      return Math.floor(Math.random() * (max - min + 1) + min);
-    }
-  });
+    };
+}
+
+function logCoordinates(event) {
+    var x1 = event.clientX - canvas1.getBoundingClientRect().left;
+    var y1 = event.clientY - canvas1.getBoundingClientRect().top;
+
+    var x2 = event.clientX - canvas2.getBoundingClientRect().left;
+    var y2 = event.clientY - canvas2.getBoundingClientRect().top;
+
+    console.log("Clicked coordinates on Image 1: X = " + x1 + ", Y = " + y1);
+    console.log("Clicked coordinates on Image 2: X = " + x2 + ", Y = " + y2);
+}
