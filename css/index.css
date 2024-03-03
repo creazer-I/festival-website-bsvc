@@ -13,21 +13,21 @@ background: url(/assests/store-assests/stars.svg) no-repeat center center fixed,
 
 @font-face {
 font-family: 'BeVietnamPro-Light';
-src: url('/assests/font/vietnam-pro/BeVietnamPro-Light.ttf') format('truetype');
+src: url('/app/assests/font/vietnam-pro/BeVietnamPro-Light.ttf') format('truetype');
 font-weight: normal;
 font-style: normal;
 }
 
 @font-face {
 font-family: 'BeVietnamPro-bold';
-src: url('/assests/font/vietnam-pro/BeVietnamPro-Bold.ttf') format('truetype');
+src: url('/app/assests/font/vietnam-pro/BeVietnamPro-Bold.ttf') format('truetype');
 font-weight: normal;
 font-style: normal;
 }
 
 @font-face {
   font-family: 'BeVietnamPro-black';
-  src: url('/assests/font/vietnam-pro/BeVietnamPro-Black.ttf') format('truetype');
+  src: url('/app/assests/font/vietnam-pro/BeVietnamPro-Black.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
 }
@@ -173,7 +173,7 @@ border-color: #18db18; /* Darker green color */
 }
 
 .center-image {
-  width: 40%; /* Adjust as needed */
+  width: 40%; 
 }
 /* For screens smaller than 768px */
 @media (max-width: 768px) {
@@ -189,6 +189,9 @@ border-color: #18db18; /* Darker green color */
   .bottom-image img {
     width: 60%; 
   }
+  .center-image {
+    width: 30%; /* Adjust as needed */
+  }
 }
 
 /* For screens smaller than 480px */
@@ -199,4 +202,27 @@ border-color: #18db18; /* Darker green color */
   .bottom-image img {
     width: 80%; 
   }
+}
+
+
+@media screen and (max-width: 768px) {
+  .desktop-image {
+    display: none;
+  }
+}
+
+@media screen and (min-width: 769px) {
+  .mobile-image {
+    display: none;
+  }
+}
+
+footer {
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  background-color: #f8f8f8;
+  color: black;
+  text-align: center;
+  margin-top: 10%;
 }

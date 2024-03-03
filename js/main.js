@@ -97,11 +97,10 @@ window.onload = function() {
         context2.drawImage(img2, 0, 0, img2.width, img2.height);
     };
 
-    img1.src = './images/different-Image-collection1/Original_1.png';
-    img2.src = './images/different-Image-collection1/Duplicate_2.png';
+    img1.src = 'images/different-Image-collection1/Original_1.png';
+    img2.src = 'images/different-Image-collection1/Duplicate_2.png';
     // img1.src = './images/different-Image-collection1/OfficePuzzle--2.png';
     // img2.src = './images/different-Image-collection1/OfficePuzzle--1.png';
-
     // Start the timer
     startTimer();
 

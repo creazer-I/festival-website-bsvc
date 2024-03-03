@@ -11,6 +11,7 @@
   <script src="./js/external/bootstrap.min.js"></script>
   <script src="./js/main.js"></script>
   <script src="./js/movement.js"></script>
+  <script src="./js/external/jquery-3.7.1.min.js"></script>
 </head>
 <body>
   <nav class="navbar fixed-top bg-body-tertiary">
@@ -22,12 +23,10 @@
   </nav>
   <div id="poster">
     <img class="title-img" src="/assests/store-assests/Main_Title.PNG" alt="Top Center Image">
-  
-    <div class="bottom-image">
-
-      <img src="/assests/store-assests/front_cover_small.svg" alt="Center Image" class="center-image">
-  
-    </div>
+      <div class="bottom-image">
+        <img src="/assests/store-assests/front_cover_small.svg" alt="Center Image" class="center-image desktop-image">
+        <img src="/assests/store-assests/mobile_bottom_img.png" alt="Center Image" class="center-image mobile-image">
+      </div>
 </div>
   <div class="container-sm pt-5">
     <h1 class="form-heading">Selamat Hari Raya Aidilfitri!</h1>
@@ -41,7 +40,7 @@
       </div>
       <div class="mb-3">
         <label for="icNumber" class="form-label">I.C Number</label>
-        <input type="int" class="form-control" id="icNumber" placeholder="Enter your I.C Number" required maxlength="12">
+        <input type="text" class="form-control" id="icNumber" placeholder="Enter your I.C Number" required maxlength="12">
       </div>
       <div class="mb-3">
         <label for="emailAddress" class="form-label">Email Address</label>
@@ -61,7 +60,7 @@
       </div>
       <div class="mb-3">
         <label for="storeName" class="form-label">Name of Grocery Store/ Convenience Store/ Supermarket</label>
-        <input type="tel" class="form-control" id="storeName" placeholder="Enter your Store Name" required>
+        <input type="text" class="form-control" id="storeName" placeholder="Enter your Store Name" required>
       </div>
       <div class="mb-3">
         <label for="state" class="form-label">State</label>
@@ -85,12 +84,18 @@
       <button type="submit" class="btn btn-primary">Participate</button>
     </form>
   </div>
-  <footer class="footer mt-auto py-3 bg-light">
-    <div class="container text-center">
-      <span class="text-muted">© 2024 FFM Berhad. All rights reserved.</span>
-      <p><a href="/terms-and-conditions.html" target="_blank">Terms and Conditions</a></p>
+  <footer class="footer bg-light py-4">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6">
+          <span>© 2024 FFM Berhad. All rights reserved.</span>
+        </div>
+        <div class="col-md-6 text-md-right">
+          <a href="/terms.html" class="text-black" target="_blank">Terms and Conditions</a>
+        </div>
+      </div>
     </div>
-  </footer>
+  </footer>  
 </body>
 
 </html>
