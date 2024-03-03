@@ -8,26 +8,26 @@ align-items: center;
 height: auto;
 margin: 0;
 overflow-x: hidden;
-background: url(/app/assests/store-assests/stars.svg) no-repeat center center fixed, linear-gradient(115deg, #62cff4, #2c67f2);
+background: url(/assests/store-assests/stars.svg) no-repeat center center fixed, linear-gradient(115deg, #62cff4, #2c67f2);
 }
 
 @font-face {
 font-family: 'BeVietnamPro-Light';
-src: url('/app/assests/font/vietnam-pro/BeVietnamPro-Light.ttf') format('truetype');
+src: url('/assests/font/vietnam-pro/BeVietnamPro-Light.ttf') format('truetype');
 font-weight: normal;
 font-style: normal;
 }
 
 @font-face {
 font-family: 'BeVietnamPro-bold';
-src: url('/app/assests/font/vietnam-pro/BeVietnamPro-Bold.ttf') format('truetype');
+src: url('/assests/font/vietnam-pro/BeVietnamPro-Bold.ttf') format('truetype');
 font-weight: normal;
 font-style: normal;
 }
 
 @font-face {
   font-family: 'BeVietnamPro-black';
-  src: url('/app/assests/font/vietnam-pro/BeVietnamPro-Black.ttf') format('truetype');
+  src: url('/assests/font/vietnam-pro/BeVietnamPro-Black.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
 }

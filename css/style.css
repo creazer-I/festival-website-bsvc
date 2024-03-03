@@ -1,20 +1,20 @@
 @font-face {
     font-family: 'BeVietnamPro-Light';
-    src: url('/app/assests/font/vietnam-pro/BeVietnamPro-Light.ttf') format('truetype');
+    src: url('/assests/font/vietnam-pro/BeVietnamPro-Light.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
 }
     
 @font-face {
     font-family: 'BeVietnamPro-bold';
-    src: url('/app/assests/font/vietnam-pro/BeVietnamPro-Bold.ttf') format('truetype');
+    src: url('/assests/font/vietnam-pro/BeVietnamPro-Bold.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
 }
     
 @font-face {
     font-family: 'BeVietnamPro-black';
-    src: url('/app/assests/font/vietnam-pro/BeVietnamPro-Black.ttf') format('truetype');
+    src: url('/assests/font/vietnam-pro/BeVietnamPro-Black.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
 }
