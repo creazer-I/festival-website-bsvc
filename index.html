@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Festival app</title>
+  <link href="./css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="./css/index.css">
+  <script src="./js/external/bootstrap.min.js"></script>
+  <script src="./js/main.js"></script>
+  <script src="./js/movement.js"></script>
+</head>
+<body>
+  <nav class="navbar fixed-top bg-body-tertiary">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">
+          <img class="navbar-brand-img" src="/app/assests/store-assests/Artboard_5_store_logo.PNG" alt="ffm" style=" height: 60px;" > <!-- Adjust height as needed -->
+        </a>
+    </div>
+  </nav>
+  <div id="poster">
+    <img class="title-img" src="/app/assests/store-assests/Main_Title.PNG" alt="Top Center Image">
+  
+    <div class="bottom-image">
+
+      <img src="/app/assests/store-assests/front_cover_small.svg" alt="Center Image" class="center-image">
+  
+    </div>
+</div>
+  <div class="container-sm pt-5">
+    <h1 class="form-heading">Selamat Hari Raya Aidilfitri!</h1>
+    <p class="form-description">We're thrilled to have you join us in celebrating Hari Raya Aidilfitri. Participate in our festive event and stand a chance to win exciting prizes! Fill out the form below to get started. Terima Kasih!</p>
+    
+    <!-- Start of form -->
+    <form id="participationForm">
+      <div class="mb-3">
+        <label for="fullName" class="form-label">Full Name as per I.C. (MyKad)</label>
+        <input type="text" class="form-control" id="fullName" placeholder="Enter your full name" required maxlength="30">
+      </div>
+      <div class="mb-3">
+        <label for="icNumber" class="form-label">I.C Number</label>
+        <input type="int" class="form-control" id="icNumber" placeholder="Enter your I.C Number" required maxlength="12">
+      </div>
+      <div class="mb-3">
+        <label for="emailAddress" class="form-label">Email Address</label>
+        <input type="email" class="form-control" id="emailAddress" placeholder="Enter your email address" required maxlength="50">
+      </div>
+      <div class="mb-3">
+        <label for="mobileNumber" class="form-label">Mobile Number</label>
+        <input type="tel" class="form-control" id="mobileNumber" placeholder="Enter your mobile number" required maxlength="10" required pattern="[0-9]{10,11}">
+      </div>
+      <div class="mb-3">
+        <label for="photoUpload" class="form-label">Upload Photo</label>
+        <input type="file" class="form-control" id="photoUpload" required>
+      </div>
+      <div class="mb-3">
+        <label for="purchaseDate" class="form-label">Purchase Date</label>
+        <input type="date" class="form-control" id="purchaseDate" placeholder="Enter the Purchase Date" required>
+      </div>
+      <div class="mb-3">
+        <label for="storeName" class="form-label">Name of Grocery Store/ Convenience Store/ Supermarket</label>
+        <input type="tel" class="form-control" id="storeName" placeholder="Enter your Store Name" required>
+      </div>
+      <div class="mb-3">
+        <label for="state" class="form-label">State</label>
+        <select class="form-select" id="state" required>
+          <option selected>Kuala Lumpur</option>
+          <option selected>Labuan</option>
+          <option selected>Johor</option>
+          <option selected>Kedah</option>
+          <option selected>Kelantan</option>          
+          <option selected>Melaka</option>
+          <option selected>Negeri Sembilan</option>
+          <option selected>Pahang</option>
+          <option selected>Sabah</option>
+          <option selected>Sarawak</option>
+          <option selected>Selangor</option>
+          <option selected>Terengganu</option>
+          <option selected value="">Select your state</option>
+          <!-- Add options for each state here -->
+        </select>
+      </div>
+      <button type="submit" class="btn btn-primary">Participate</button>
+    </form>
+  </div>
+  <footer class="footer mt-auto py-3 bg-light">
+    <div class="container text-center">
+      <span class="text-muted">© 2024 Your Company Name. All rights reserved.</span>
+      <p><a href="/terms-and-conditions.html" target="_blank">Terms and Conditions</a></p>
+    </div>
+  </footer>
+</body>
+
+</html>

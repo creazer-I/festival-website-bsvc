@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="./css/style.css">
+    <link href="./css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <script src="./js/external/bootstrap.min.js"></script>
+    <script src="./js/external/jquery-3.7.1.min.js"></script>
+</head>
+<body>
+    <header>
+        <h1 class="text-center">Spot the Difference</h1>
+    </header>
+    <div class="canvas-container">
+        <canvas id="imageCanvas1" class="image" onclick="checkDifference(event, 'imageCanvas1')"></canvas>
+        <div class="gap"></div>
+        <canvas id="imageCanvas2" class="image overlay" onclick="checkDifference(event, 'imageCanvas2')"></canvas>        
+    </div>
+    <div class="container">
+        <div id="status-container">
+            <div id="lives">Lives: 2</div>
+            <div id="timer">Time: 02:00</div>
+        </div>    
+        <div class="row">
+            <div class="col-sm-12 text-center">
+                <p id="score">Score: 0</p>
+            </div>
+        </div>
+        <p id="differenceCount">Differences found: <span id="remainingDifferences">5</span></p>
+    </div>
+    <script src="./js/main.js"></script>
+    <script src="./js/reload.js"></script>
+</body>
+</html>

@@ -1,0 +1,202 @@
+body {
+/* font-family: Arial, sans-serif; */
+font-family: 'BeVietnamPro-Light', fallback, sans-serif;
+display: flex;
+flex-direction: column;
+justify-content: flex-start;
+align-items: center;
+height: auto;
+margin: 0;
+overflow-x: hidden;
+background: url(/app/assests/store-assests/stars.svg) no-repeat center center fixed, linear-gradient(115deg, #62cff4, #2c67f2);
+}
+
+@font-face {
+font-family: 'BeVietnamPro-Light';
+src: url('/app/assests/font/vietnam-pro/BeVietnamPro-Light.ttf') format('truetype');
+font-weight: normal;
+font-style: normal;
+}
+
+@font-face {
+font-family: 'BeVietnamPro-bold';
+src: url('/app/assests/font/vietnam-pro/BeVietnamPro-Bold.ttf') format('truetype');
+font-weight: normal;
+font-style: normal;
+}
+
+@font-face {
+  font-family: 'BeVietnamPro-black';
+  src: url('/app/assests/font/vietnam-pro/BeVietnamPro-Black.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+  
+.navbar {
+  padding: 1.6rem 1rem;
+  transition: background 0.5s ease;
+  font-family: 'BeVietnamPro-bold', fallback, sans-serif;
+  font-size: medium;
+  background-image: black;
+}
+.navbar-brand {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  color: rgb(0, 0, 0);
+  transition: color 0.5s ease;
+}
+
+.scrolled {
+  background: #ffffff !important;
+}
+.scrolled .navbar-brand {
+  color: white !important;
+}
+
+.container-sm {
+max-width: 600px;
+width: 100%;
+margin: 0 auto;
+padding: 20px;
+background-color: #fff;
+border-radius: 8px;
+box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+}
+
+.form-heading {
+font-family: 'BeVietnamPro-Light', fallback, sans-serif;
+font-weight: bold;
+text-align: center;
+margin-bottom: 20px;
+color: #000000;  
+font-size:large;
+}
+
+.form-description{
+font-size: small;
+text-align: center;
+}
+.form-label {
+font-family: 'BeVietnamPro-bold', fallback, sans-serif;
+color: #000000; 
+font-size: 12px;
+font-weight: bold;
+}
+.form-control, .form-select{
+font-size: small;
+font-family: 'BeVietnamPro-Light', fallback, sans-serif;
+width: 100%;
+padding: 10px;
+margin-bottom: 10px;
+border: none; /* Remove border */
+border-radius: 5px;
+background-color: #f8f8f8;
+}
+
+.btn-primary {
+font-family: 'BeVietnamPro-bold', fallback, sans-serif;
+display: block;
+width: 50%; /* Make the button smaller */
+margin: 0 auto; /* Center the button */
+background-color: #19e619; /* Green color */
+border-color: #19e619; /* Green color */
+color: #fff;
+padding: 10px 20px;
+border-radius: 12px; /* Squircle shape */
+text-decoration: none;
+text-align: center;
+font-size: 12px;
+}
+.btn-primary:hover {
+background-color: #18db18; /* Darker green color */
+border-color: #18db18; /* Darker green color */
+}
+
+.content {
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.poster {
+  flex: 1 0 40%; 
+  max-width: 40%; 
+}
+
+.form-container {
+  flex: 1 0 50%; /* Take up 50% of the container width */
+  max-width: 50%; /* Maximum width is also 50% */
+}
+
+
+@media (max-width: 600px) {
+    .container-sm {
+      max-width: 100%;
+    }
+    .form-label, .form-control, .btn-primary {
+      font-size: 16px;
+    }
+    .btn-primary {
+      width: 100%;
+    }
+    .poster, .form-container {
+      flex: 1 0 100%; /* Take up 100% of the container width on small screens */
+      max-width: 100%; /* Maximum width is also 100% */
+    }
+}
+
+#poster {
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  margin-top: 60px; /* Adjust this value to the height of your navbar */
+}
+
+.title-img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 15%; /* Make the title image smaller */
+}
+
+.bottom-image {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end; /* Align the center image to the bottom */
+  width: 100%;
+  height: 100%;
+}
+
+.center-image {
+  width: 40%; /* Adjust as needed */
+}
+/* For screens smaller than 768px */
+@media (max-width: 768px) {
+  .title-img {
+    width: 30%;
+  }
+  .bottom-image img {
+    width: 80%; 
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1024px){
+  .bottom-image img {
+    width: 60%; 
+  }
+}
+
+/* For screens smaller than 480px */
+@media (max-width: 480px) {
+  .title-img {
+    width: 50%;
+  }
+  .bottom-image img {
+    width: 80%; 
+  }
+}

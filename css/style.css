@@ -1,0 +1,138 @@
+@font-face {
+    font-family: 'BeVietnamPro-Light';
+    src: url('/app/assests/font/vietnam-pro/BeVietnamPro-Light.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+    
+@font-face {
+    font-family: 'BeVietnamPro-bold';
+    src: url('/app/assests/font/vietnam-pro/BeVietnamPro-Bold.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+    
+@font-face {
+    font-family: 'BeVietnamPro-black';
+    src: url('/app/assests/font/vietnam-pro/BeVietnamPro-Black.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+body {
+    font-family: 'BeVietnamPro-Light', fallback, sans-serif;
+    overflow-x: hidden;
+    color: #fff;
+}
+
+.canvas-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow-x: auto;
+    padding: 20px;
+}
+
+.image, .overlay {
+    max-width: 100%;
+    height: auto;
+    margin-bottom: 10px;
+    border-radius: 10px;
+}
+
+.gap {
+    width: 20px;
+}
+
+.btn {
+    width: 100%;
+    font-size: 20px;
+    margin-bottom: 10px;
+    border: none;
+    color: #fff;
+}
+
+.text-center {
+    font-size: medium;
+    padding-top: 5%;
+    font-family: 'BeVietnamPro-bold'; 
+}
+
+#score {
+    font-family: 'BeVietnamPro-bold', fallback, sans-serif;
+    display: inline-block;
+    border: none; 
+    padding: 10px 30px; 
+    color: #ffffff; 
+    background-color:#19e619; 
+    border-radius: 10px;
+    font-size: 16px; 
+}
+
+#status-container {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 100%;
+    padding: 10px;
+}
+
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+#lives, #timer {
+    font-family: 'BeVietnamPro-Light', fallback, sans-serif;
+    font-weight: bold;
+    font-size: small;
+    border: none; 
+    padding: 10px 50px;
+    color: #292929; 
+    text-align: center;
+    background-color: #f0f0f0; 
+    border-radius: 8px; 
+    margin-top: 10px;
+}
+
+@media screen and (max-width: 576px) {
+    .canvas-container {
+        flex-direction: column;
+    }
+    .image, .overlay {
+        max-width: calc(100% - 20px);
+        margin-bottom: 10px;
+    }
+}
+
+@media screen and (min-width: 577px) and (max-width: 768px) {
+    .canvas-container {
+        flex-direction: column;
+    }
+    .image, .overlay {
+        max-width: calc(100% - 200px);
+        margin-bottom: 10px;
+    }
+}
+
+@media screen and (min-width: 769px) {
+    .canvas-container {
+        flex-direction: row;
+    }
+    .image, .overlay {
+        max-width: 50%;
+    }
+}
+
+@media screen and (max-width: 576px) {
+    .canvas-container {
+        flex-direction: column;
+    }
+    .image, .overlay {
+        max-width: calc(100% - 20px);
+        margin-bottom: 10px;
+    }
+}
