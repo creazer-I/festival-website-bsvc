@@ -35,15 +35,15 @@ window.onload = function() {
         form.addEventListener('submit', function(event) {
             event.preventDefault(); // Prevent the form from being submitted normally
 
-            // var reader = new FileReader();
+            var reader = new FileReader();
 
-            // reader.onload = function(e) {
+            reader.onload = function(e) {
             // Get form data
             var formData = {
                 fullName: document.getElementById('fullName').value,
                 icNumber: document.getElementById('icNumber').value,
                 emailAddress: document.getElementById('emailAddress').value,
-                photoUpload:  document.getElementById('photoUpload').files[0],
+                photoUpload:  e.target.result,
                 mobileNumber: document.getElementById('mobileNumber').value,
                 purchaseDate: document.getElementById('purchaseDate').value,
                 storeName: document.getElementById('storeName').value,
@@ -55,8 +55,8 @@ window.onload = function() {
 
             // Redirect to game page
             window.location.href = './game.html';
-        // };
-        // reader.readAsDataURL(document.getElementById('photoUpload').files[0]);
+        };
+         reader.readAsDataURL(document.getElementById('photoUpload').files[0]);
         });
     }
 
@@ -246,10 +246,7 @@ function getTodayDate() {
     return yyyy + '-' + mm + '-' + dd;
 }
 
-function endGame() {
-    clearInterval(timerInterval);
-
-    // Get form data from local storage
+function saveData() {
     var formData = JSON.parse(localStorage.getItem('formData'));
 
     // Get game data
@@ -265,47 +262,42 @@ function endGame() {
 
     // // Combine form data and game data
     var data_log = {...formData, ...gameData};
-    console.log(data_log)
+    // console.log(data_log)
 
-    // Create a new FormData object
-    var data = new FormData();
-
-    // Append form data and game data to the FormData object
-    for (var key in formData) {
-        data.append(key, formData[key]);
-    }
-    for (var key in gameData) {
-        data.append(key, gameData[key]);
-    }
+    // Your fetch request here
+    fetch('http://localhost:3000/saveData', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data_log),
+    })
+    .then(function(response) {
+        return response.text();
+    })
+    .then(function(text) {
+        console.log(text);
+    })
+    .catch(function(error) {
+        console.error(error);
+    });
     
-    console.log(data)
 
+    // Your fetch request here
     // fetch('http://localhost:3000/saveData', {
     //     method: 'POST',
     //     headers: {
-    //         'Content-Type': 'application/json'
+    //         'Content-Type': 'application/json',
     //     },
-    //     body: JSON.stringify(data)
-    // }).then(function(response) {
-    //     return response.text();
-    // }).then(function(text) {
-    //     console.log(text);
-    // }).catch(function(error) {
-    //     console.error(error);
+    //     body: JSON.stringify(data_log),
     // });
+}
 
-    // fetch('http://localhost:3000/saveData', {
-    //     method: 'POST',
-    //     body: data
-    // }).then(function(response) {
-    //     return response.text();
-    // }).then(function(text) {
-    //     console.log(text);
-    // }).catch(function(error) {
-    //     console.error(error);
-    // });
+function endGame() {
+    clearInterval(timerInterval);
 
-    // Log missing spots
+    saveData();
+
     logMissingSpots();
 
     // Create a full-screen semi-transparent overlay
