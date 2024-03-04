@@ -76,22 +76,23 @@ app.post('/saveData', async (req, res) => {
                 console.log('File created');
                 
                 // Save the data in the MySQL database
-                const query = 'INSERT INTO game_entries SET ?';
+                const query = 'INSERT INTO game_entry_two SET ?';
                 const data = {
-                    emailAddress: req.body.emailAddress,
-                    entrydate: req.body.entrydate,
-                    entryid: req.body.entryid,
-                    fullName: req.body.fullName,
-                    icNumber: req.body.icNumber,
+                    email_address: req.body.emailAddress,
+                    entry_date: req.body.entrydate,
+                    //entryid: req.body.entryid,
+                    full_name: req.body.fullName,
+                    ic_number: req.body.icNumber,
                     lives: req.body.lives,
-                    mobileNumber: req.body.mobileNumber,
-                    photoUpload: filename,
-                    purchaseDate: req.body.purchaseDate,
+                    mobile_number: req.body.mobileNumber,
+                    photo_upload: filename,
+                    purchase_date: req.body.purchaseDate,
                     result: req.body.result,
                     score: req.body.score,
                     state: req.body.state,
-                    storeName: req.body.storeName,
-                    time: req.body.time
+                    store_name: req.body.storeName,
+                    time: req.body.time,
+                    remaining_time: req.body.remaining_time
                 };
                 
                 pool.query(query, data, function(err, results) {

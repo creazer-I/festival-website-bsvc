@@ -248,21 +248,20 @@ function getTodayDate() {
 
 function saveData() {
     var formData = JSON.parse(localStorage.getItem('formData'));
-
+    var currentTime = new Date();
     // Get game data
     var gameData = {
         score: score,
-        time: timeLimit,
+        time: currentTime.getHours() + ':' + currentTime.getMinutes() + ':' + currentTime.getSeconds(),
         lives: lives, 
         entryid:  Math.floor(Math.random() * 9900) + 100,
         entrydate: getTodayDate(),
-        result: decision
+        result: decision,
+        remaining_time: timeLimit,
     };
 
-
-    // // Combine form data and game data
+    // Combine form data and game data
     var data_log = {...formData, ...gameData};
-    // console.log(data_log)
 
     // Your fetch request here
     fetch('http://localhost:3000/saveData', {
@@ -273,30 +272,43 @@ function saveData() {
         body: JSON.stringify(data_log),
     })
     .then(function(response) {
-        return response.text();
+        if (response.ok) {
+            return response.json(); // Parse response JSON if response is successful
+        } else {
+            throw new Error('Failed to save data in the database'); // Throw an error if response is not successful
+        }
     })
-    .then(function(text) {
-        console.log(text);
+    .then(function(data) {
+        console.log(data.message); // Log success message
+        // Optionally, you can display a success message to the user here
+        // Add any additional client-side logic here without causing a page reload
     })
     .catch(function(error) {
-        console.error(error);
+        console.error(error); // Log any errors
+        // Handle error condition here, e.g., display an error message to the user
     });
-    
-
-    // Your fetch request here
-    // fetch('http://localhost:3000/saveData', {
-    //     method: 'POST',
-    //     headers: {
-    //         'Content-Type': 'application/json',
-    //     },
-    //     body: JSON.stringify(data_log),
-    // });
 }
 
 function endGame() {
     clearInterval(timerInterval);
 
-    saveData();
+    var formData = JSON.parse(localStorage.getItem('formData'));
+    var currentTime = new Date();
+    // Get game data
+    var gameData = {
+        score: score,
+        time: currentTime.getHours() + ':' + currentTime.getMinutes() + ':' + currentTime.getSeconds(),
+        lives: lives, 
+        //entryid:  Math.floor(Math.random() * 9900) + 100,
+        entrydate: getTodayDate(),
+        result: decision,
+        remaining_time: timeLimit,
+    };
+
+    // Combine form data and game data
+    var data_log = {...formData, ...gameData};
+
+    console.log(data_log)
 
     logMissingSpots();
 
@@ -363,14 +375,14 @@ function endGame() {
 
     var title = document.createElement("h4"); // Change from 'h5' to 'h2' for a larger title
     title.setAttribute("class", "modal-title");
-    title.innerText = "Thanks for Participating !"; // Set the title text
+    title.innerText = "Thanks for Participating in FFM 2024 Raya Beli+Main=Menang Contest!"; // Set the title text
     title.style.textAlign = "center"; // Center the title text
     modalBody.appendChild(title); // Append the title to the modal body
 
     // Add a quote
     var quote = document.createElement("p");
     quote.setAttribute("class", "modal-quote");
-    quote.innerText = "Every end is a new beginning."; // Set the quote text
+    quote.innerText = "You may have a higher chance of winning by making another purchase and submitting for an additional entry!"; // Set the quote text
     quote.style.textAlign = "center"; // Center the quote text
     modalBody.appendChild(quote); // Append the quote to the modal body
 
@@ -379,11 +391,15 @@ function endGame() {
     modalFooter.setAttribute("class", "modal-footer");
     var btn = document.createElement("button");
     btn.setAttribute("class", "btn btn-primary");
-    btn.innerHTML = "Return to Home"; // Change from 'Claim Now!' to 'Return to Home'
+    btn.innerHTML = "Submit"; // Change from 'Claim Now!' to 'Return to Home'
     btn.style.display = "block"; // Make the button a block element
     btn.style.margin = "auto"; // Center the button
     btn.onclick = function () {
-        window.location.href = './index.html'; // Replace with your home page URL
+        // Call saveData() function here
+        saveData();
+        
+        // Redirect to index.html after saveData() completes
+        window.location.href = './index.html';
     };
     modalFooter.appendChild(btn);
 
@@ -401,6 +417,7 @@ function endGame() {
     // Show the modal
     modal.style.display = "block";
 }
+
 
 function logMissingSpots() {
     console.log("Missing spots for canvas 1:");
